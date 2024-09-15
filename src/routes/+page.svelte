@@ -1,29 +1,20 @@
 <script>
-  import { onMount } from 'svelte';
   import { Card } from 'flowbite-svelte';
-
-  let showWelcomeMessage = false;
 
   const featuredGame = {
     title: "Quantum Quandary",
-    imageUrl: "/api/placeholder/1200/400",
+    imageUrl: "https://cdn-icons-png.flaticon.com/512/25/25231.png",
     description: "Dive into the quirky world of quantum mechanics! Can you solve the puzzles and save Schrödinger's cat?"
   };
 
   const games = [
-    { title: "Bubble Blast", imageUrl: "/api/placeholder/300/200", rating: 4.8 },
-    { title: "Neon Nexus", imageUrl: "/api/placeholder/300/200", rating: 4.5 },
-    { title: "Quantum Quandary", imageUrl: "/api/placeholder/300/200", rating: 4.7 },
-    { title: "Gadget Galore", imageUrl: "/api/placeholder/300/200", rating: 4.3 },
-    { title: "Zany Zapper", imageUrl: "/api/placeholder/300/200", rating: 4.6 },
-    { title: "Pixel Potion", imageUrl: "/api/placeholder/300/200", rating: 4.2 },
+    { title: "Bubble Blast", imageUrl: "https://cdn-icons-png.flaticon.com/512/25/25231.png", rating: 4.8 },
+    { title: "Neon Nexus", imageUrl: "https://cdn-icons-png.flaticon.com/512/25/25231.png", rating: 4.5 },
+    { title: "Quantum Quandary", imageUrl: "https://cdn-icons-png.flaticon.com/512/25/25231.png", rating: 4.7 },
+    { title: "Gadget Galore", imageUrl: "https://cdn-icons-png.flaticon.com/512/25/25231.png", rating: 4.3 },
+    { title: "Zany Zapper", imageUrl: "https://cdn-icons-png.flaticon.com/512/25/25231.png", rating: 4.6 },
+    { title: "Pixel Potion", imageUrl: "https://cdn-icons-png.flaticon.com/512/25/25231.png", rating: 4.2 },
   ];
-
-  onMount(() => {
-    setTimeout(() => {
-      showWelcomeMessage = true;
-    }, 3000);
-  });
 </script>
 
 <div class="min-h-screen bg-[#2b2c37] text-gray-300 font-laboratory relative overflow-hidden">
@@ -103,12 +94,10 @@
     </div>
   </footer>
 
-  {#if showWelcomeMessage}
-    <div class="fixed bottom-4 right-4 bg-[#3d3e4d] text-blue-400 p-4 rounded-lg shadow-lg animate-fade-in-out">
-      <p class="font-bold">Welcome to the lab!</p>
-      <p>Let's make some scientific mischief!</p>
-    </div>
-  {/if}
+  <div class="fixed bottom-4 right-4 bg-[#3d3e4d] text-blue-400 p-4 rounded-lg shadow-lg">
+    <p class="font-bold">Welcome to the lab!</p>
+    <p>Let's make some scientific mischief!</p>
+  </div>
 </div>
 
 <style>
@@ -150,14 +139,5 @@
 
   :global(.animate-spin-slow) {
     animation: spin 10s linear infinite;
-  }
-
-  @keyframes fadeInOut {
-    0%, 100% { opacity: 0; transform: translateY(20px); }
-    10%, 90% { opacity: 1; transform: translateY(0); }
-  }
-
-  .animate-fade-in-out {
-    animation: fadeInOut 5s ease-in-out;
   }
 </style>
