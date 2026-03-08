@@ -1,0 +1,63 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.footer {
+  width: 100%;
+  border-top: $border-width solid $color-border;
+  background: $color-bg-primary;
+  padding: $space-lg $page-padding-h;
+
+  @include respond-to(tablet) {
+    padding: $space-lg $space-md;
+  }
+}
+
+.footer-content {
+  max-width: $max-width-nav;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-md;
+
+  @include respond-to(tablet) {
+    flex-direction: column;
+    text-align: center;
+    gap: $space-sm;
+  }
+}
+
+.copyright {
+  color: $color-text-muted;
+  font-size: $font-size-small;
+  margin: 0;
+}
+
+.discord-link {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-xs;
+  color: $color-text-primary;
+  text-decoration: none;
+  font-size: $font-size-small;
+  font-weight: $font-weight-medium;
+  @include focus-visible;
+
+  @include motion-safe {
+    transition: color $transition-fast;
+  }
+
+  &:hover {
+    color: $color-accent-blue-light;
+  }
+}
+
+.discord-icon {
+  width: 1.1em;
+  height: 1.1em;
+}

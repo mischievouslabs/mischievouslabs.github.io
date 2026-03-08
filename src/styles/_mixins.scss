@@ -1,0 +1,180 @@
+@use 'variables' as *;
+
+// =============================================================================
+// Responsive Breakpoints
+// =============================================================================
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (max-width: $bp-mobile) { @content; }
+  } @else if $breakpoint == tablet {
+    @media (max-width: $bp-tablet) { @content; }
+  } @else if $breakpoint == desktop {
+    @media (max-width: $bp-desktop) { @content; }
+  } @else if $breakpoint == wide {
+    @media (max-width: $bp-wide) { @content; }
+  }
+}
+
+// =============================================================================
+// Motion Safe
+// =============================================================================
+
+@mixin motion-safe {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
+}
+
+// =============================================================================
+// Section Container
+// =============================================================================
+
+@mixin section-container {
+  max-width: $max-width-content;
+  margin: 0 auto;
+  padding: $space-2xl $page-padding-h;
+  width: 100%;
+  box-sizing: border-box;
+
+  @include respond-to(tablet) {
+    padding: $space-xl $space-md;
+  }
+}
+
+// =============================================================================
+// Card Base
+// =============================================================================
+
+@mixin card-base {
+  background: $color-bg-card;
+  border: $border-width solid $color-border;
+  border-radius: $radius-card;
+  padding: $card-padding;
+
+  @include motion-safe {
+    transition: border-color $transition-fast, background-color $transition-fast;
+  }
+}
+
+@mixin card-interactive {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  background: $color-bg-card;
+  border: $border-width solid $color-border;
+  border-radius: $radius-card;
+  padding: $card-padding;
+
+  @include motion-safe {
+    transition: border-color $transition-fast, background-color $transition-fast;
+  }
+
+  &:hover {
+    border-color: $color-accent-blue;
+    background: $color-card-hover-bg;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent-blue;
+    outline-offset: 2px;
+  }
+}
+
+@mixin card-coming-soon {
+  background: $color-bg-card;
+  border: $border-width dashed $color-accent-amber;
+  border-radius: $radius-card;
+  padding: $card-padding;
+  cursor: default;
+}
+
+// =============================================================================
+// Card Content
+// =============================================================================
+
+@mixin card-title {
+  font-size: $font-size-card-title;
+  font-weight: $font-weight-semibold;
+  color: $color-text-heading;
+  margin: 0 0 $space-sm;
+}
+
+@mixin card-description {
+  font-size: $font-size-card-desc;
+  color: $color-text-muted;
+  line-height: $line-height-small;
+  margin: 0;
+}
+
+// =============================================================================
+// External Link Icon
+// =============================================================================
+
+@mixin external-link-icon {
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    margin-left: 0.3em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7'/%3E%3Cpath d='M7 7h10v10'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    opacity: 0.7;
+
+    @include motion-safe {
+      transition: opacity $transition-fast;
+    }
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+}
+
+// =============================================================================
+// Focus Visible
+// =============================================================================
+
+@mixin focus-visible {
+  &:focus-visible {
+    outline: 2px solid $color-accent-blue;
+    outline-offset: 2px;
+  }
+}
+
+// =============================================================================
+// Page Title (Orbitron)
+// =============================================================================
+
+@mixin page-title {
+  font-family: $font-display;
+  font-size: $font-size-page-title;
+  font-weight: $font-weight-bold;
+  color: $color-accent-blue;
+  line-height: $line-height-heading;
+  margin: 0;
+
+  @include respond-to(tablet) {
+    font-size: 2rem;
+  }
+
+  @include respond-to(mobile) {
+    font-size: 1.75rem;
+  }
+}
+
+// =============================================================================
+// Section Heading
+// =============================================================================
+
+@mixin section-heading {
+  font-size: $font-size-section-heading;
+  font-weight: $font-weight-semibold;
+  color: $color-accent-blue-light;
+  line-height: $line-height-heading;
+  margin: 0 0 $space-lg;
+}

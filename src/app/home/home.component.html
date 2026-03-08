@@ -1,16 +1,81 @@
-<div class="page">
-  <div class="content">
-    <img class="logo" src="logo.svg" alt="Mischievous Labs Logo" />
-    <h1 class="orbitron title">Welcome to Mischievous Labs!</h1>
+<app-header [transparent]="true"></app-header>
 
-    <p>At Mischievous Labs, we believe that the heart of gaming lies in creativity, exploration, and a little bit of mischief. Our mission is to craft unforgettable gaming experiences that push the boundaries of fun and innovation. Like our playful mascot, a mischievous kitsune pup, we embrace curiosity and adventure in everything we do.</p>
+<main id="main-content">
+  <!-- Hero Section -->
+  <section class="hero" aria-label="Welcome to Mischievous Labs">
+    <div class="hero-glow hero-glow--warm"></div>
+    <div class="hero-glow hero-glow--cool"></div>
+    <div class="hero-content">
+      <img
+        src="mascot-no-outline.svg"
+        alt=""
+        class="hero-mascot"
+        role="presentation"
+      />
+      <h1 class="hero-title">Mischievous Labs</h1>
+      <p class="hero-tagline">Crafting tools and games with a mischievous spirit</p>
+    </div>
+    <div class="scroll-hint" aria-label="Scroll to explore">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 5v14" /><path d="m19 12-7 7-7-7" />
+      </svg>
+    </div>
+  </section>
 
-    <p>Our approach to game development is simple: play is powerful. We create worlds that invite players to lose themselves in exciting challenges, bold discoveries, and moments of joy. Whether you're navigating complex puzzles, exploring vibrant worlds, or testing your skills against the odds, we're here to ensure every experience is packed with excitement.</p>
+  <!-- Studio Blurb -->
+  <section class="section blurb-section">
+    <h2 class="section-heading">Who We Are</h2>
+    <p class="blurb">
+      We're an indie studio building Unreal Engine tools and original games.
+      Small team, big ideas, and a fox mascot that won't stop judging you.
+    </p>
+  </section>
 
-    <p>We prioritize imaginative, out-of-the-box ideas that surprise and delight. Every project is an opportunity to explore new ideas, and we encourage our team to always think playfully and experiment without limits. Putting the player experience first. We listen, we learn, and we evolve to ensure every game resonates with players in meaningful ways, creating moments of connection, laughter, and triumph.</p>
+  <!-- Products -->
+  <section class="section products-section">
+    <h2 class="section-heading">What We're Building</h2>
+    <div class="card-grid">
+      <!-- Live Compile Remote — uncomment when released on Fab.com
+      <a
+        href="https://www.fab.com/sellers/Mischievous%20Labs"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="product-card"
+        aria-label="Live Compile Remote - View on Fab.com (opens in new tab)"
+      >
+        <div class="card-accent card-accent&#45;&#45;cyan"></div>
+        <h3 class="card-title">Live Compile Remote</h3>
+        <p class="card-description">Engine plugin for remote live compilation workflows in Unreal Engine.</p>
+        <span class="card-link">View on Fab.com</span>
+      </a>
+      -->
 
-    <p>We know that great games are built by great teams. We foster a collaborative environment where creativity thrives, and we never lose sight of the fact that making games should be as fun as playing them.</p>
-  </div>
+      <!-- Coming Soon: Live Compile Remote -->
+      <div class="coming-soon-card">
+        <div class="card-accent card-accent--cyan"></div>
+        <span class="coming-soon-badge">Coming Soon</span>
+        <h3 class="card-title">Live Compile Remote</h3>
+        <p class="card-description">Engine plugin for remote live compilation workflows in Unreal Engine.</p>
+      </div>
 
-  <app-footer />
-</div>
+      <!-- Coming Soon: Next Plugin -->
+      <div class="coming-soon-card">
+        <div class="card-accent card-accent--amber"></div>
+        <span class="coming-soon-badge">Coming Soon</span>
+        <h3 class="card-title">Slot Inventory System</h3>
+        <p class="card-description">A flexible slot-based inventory system for Unreal Engine.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Support Banner -->
+  <section class="section support-section">
+    <h2 class="section-heading">Need Help?</h2>
+    <p class="support-text">
+      Documentation and guides for all our products.
+    </p>
+    <a routerLink="/support" class="support-link">Browse Support Docs</a>
+  </section>
+</main>
+
+<app-footer></app-footer>

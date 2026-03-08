@@ -1,72 +1,62 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, Input, HostListener, signal } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
   template: `
-    <header class="header">
-      <nav class="nav">
-        <a routerLink="/" class="brand">
-          <img src="logo.svg" alt="Mischievous Labs" class="logo" />
+    <header class="header" [class.transparent]="transparent" [class.scrolled]="scrolled()">
+      <nav class="nav" aria-label="Main navigation">
+        <a routerLink="/" class="brand" [class.hidden]="transparent && !scrolled()">
+          <img src="mascot-no-outline.svg" alt="Mischievous Labs - Home" class="logo" />
         </a>
-        <ul class="links">
-          <li><a routerLink="/">Home</a></li>
-          <li><a href="https://www.fab.com/sellers/Mischievous%20Labs" target="_blank" rel="noopener noreferrer">Products</a></li>
-          <li><a routerLink="/support">Support</a></li>
+        <button
+          class="mobile-toggle"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-label="Open navigation menu"
+        >
+          <span class="hamburger" [class.open]="menuOpen()">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+        <ul class="links" [class.mobile-open]="menuOpen()" role="list">
+          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Home</a></li>
+          <li><a href="https://www.fab.com/sellers/Mischievous%20Labs" target="_blank" rel="noopener noreferrer" aria-label="Products (opens in new tab)" (click)="closeMenu()">Products</a></li>
+          <li><a routerLink="/support" routerLinkActive="active" (click)="closeMenu()">Support</a></li>
         </ul>
       </nav>
     </header>
   `,
-  styles: `
-    :host {
-      display: block;
-      width: 100vw;
-      position: relative;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .header {
-      background: #2b2c37;
-      border-bottom: 1px solid #3f4050;
-    }
-
-    .nav {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 2rem;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-    }
-
-    .logo {
-      height: 40px;
-      width: auto;
-    }
-
-    .links {
-      display: flex;
-      list-style: none;
-      gap: 2rem;
-
-      a {
-        color: #d1d5db;
-        text-decoration: none;
-        font-size: 0.95rem;
-        transition: color 0.2s;
-
-        &:hover {
-          color: #60a5fa;
-        }
-      }
-    }
-  `
+  styleUrl: './header.component.scss'
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  @Input() transparent = false;
+
+  scrolled = signal(false);
+  menuOpen = signal(false);
+
+  @HostListener('window:scroll')
+  onScroll() {
+    if (this.transparent) {
+      this.scrolled.set(window.scrollY > 80);
+    }
+  }
+
+  @HostListener('window:keydown.escape')
+  onEscape() {
+    if (this.menuOpen()) {
+      this.closeMenu();
+    }
+  }
+
+  toggleMenu() {
+    this.menuOpen.update(v => !v);
+  }
+
+  closeMenu() {
+    this.menuOpen.set(false);
+  }
+}

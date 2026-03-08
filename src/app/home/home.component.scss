@@ -1,58 +1,277 @@
-.page {
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// =============================================================================
+// Hero Section
+// =============================================================================
+
+.hero {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, $color-bg-hero-top 0%, $color-bg-primary 100%);
   overflow: hidden;
 }
 
-.lab-bg-animation {
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
-  filter: blur(100px);
-  opacity: 0.3;
-  animation: bgPulse 10s ease-in-out infinite alternate;
-  z-index: 0;
+.hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+
+  @include motion-safe {
+    animation: glow-pulse 6s ease-in-out infinite;
+  }
+
+  &--warm {
+    width: 500px;
+    height: 500px;
+    background: rgba($color-accent-amber, 0.12);
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    @include respond-to(tablet) {
+      width: 300px;
+      height: 300px;
+    }
+  }
+
+  &--cool {
+    width: 600px;
+    height: 600px;
+    background: rgba($color-accent-blue, 0.06);
+    top: 60%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+
+    @include respond-to(tablet) {
+      width: 350px;
+      height: 350px;
+    }
+  }
 }
 
-@keyframes bgPulse {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.1); }
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
 }
 
-.content {
+.hero-content {
   position: relative;
   z-index: 1;
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1.5rem 2rem 3rem;
+  text-align: center;
+  padding: 0 $page-padding-h;
+}
 
-  p {
-    color: #d1d5db;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
+.hero-mascot {
+  width: 280px;
+  height: auto;
+  margin-bottom: $space-xl;
+
+  @include respond-to(tablet) {
+    width: 220px;
+  }
+
+  @include respond-to(mobile) {
+    width: 180px;
+    max-width: 80vw;
+  }
+}
+
+.hero-title {
+  font-family: $font-display;
+  font-size: 3rem;
+  font-weight: $font-weight-bold;
+  color: $color-text-heading;
+  margin-bottom: $space-md;
+  letter-spacing: 0.05em;
+
+  @include respond-to(tablet) {
+    font-size: 2.25rem;
+  }
+
+  @include respond-to(mobile) {
+    font-size: 1.75rem;
+  }
+}
+
+.hero-tagline {
+  font-size: 1.2rem;
+  color: $color-accent-amber;
+  font-weight: $font-weight-medium;
+  margin: 0;
+
+  @include respond-to(tablet) {
     font-size: 1.05rem;
   }
 }
 
-.logo {
-  width: 300px;
-  height: auto;
-  margin-bottom: 2rem;
+.scroll-hint {
+  position: absolute;
+  bottom: $space-xl;
+  color: $color-text-muted;
+  opacity: 0.6;
+
+  @include motion-safe {
+    animation: scroll-hint-bob 2s ease-in-out infinite;
+  }
 }
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #60a5fa;
-  margin-bottom: 2rem;
+@keyframes scroll-hint-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+// =============================================================================
+// Content Sections
+// =============================================================================
+
+.section {
+  @include section-container;
+}
+
+.section-heading {
+  @include section-heading;
   text-align: center;
 }
 
+// =============================================================================
+// Studio Blurb
+// =============================================================================
+
+.blurb-section {
+  text-align: center;
+}
+
+.blurb {
+  font-size: $font-size-body;
+  color: $color-text-primary;
+  line-height: $line-height-body;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+// =============================================================================
+// Product Cards
+// =============================================================================
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $space-lg;
+
+  @include respond-to(tablet) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.product-card {
+  position: relative;
+  overflow: hidden;
+  @include card-interactive;
+}
+
+.coming-soon-card {
+  position: relative;
+  overflow: hidden;
+  @include card-coming-soon;
+}
+
+.card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+
+  &--cyan {
+    background: $color-accent-cyan;
+  }
+
+  &--amber {
+    background: $color-accent-amber;
+  }
+}
+
+.card-title {
+  @include card-title;
+  padding-left: $space-md;
+}
+
+.card-description {
+  @include card-description;
+  padding-left: $space-md;
+}
+
+.card-link {
+  display: inline-block;
+  margin-top: $space-md;
+  padding-left: $space-md;
+  font-size: $font-size-small;
+  color: $color-accent-blue;
+  font-weight: $font-weight-medium;
+
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    margin-left: 0.3em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2360a5fa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17L17 7'/%3E%3Cpath d='M7 7h10v10'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+  }
+}
+
+.coming-soon-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: $font-weight-semibold;
+  color: $color-accent-amber;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: $space-sm;
+  padding-left: $space-md;
+}
+
+// =============================================================================
+// Support Banner
+// =============================================================================
+
+.support-section {
+  text-align: center;
+  padding-bottom: $space-3xl;
+}
+
+.support-text {
+  color: $color-text-muted;
+  margin-bottom: $space-lg;
+}
+
+.support-link {
+  display: inline-block;
+  padding: $space-sm $space-xl;
+  color: $color-accent-blue;
+  border: $border-width solid $color-accent-blue;
+  border-radius: $radius-button;
+  font-weight: $font-weight-medium;
+  text-decoration: none;
+  @include focus-visible;
+
+  @include motion-safe {
+    transition: background-color $transition-fast, color $transition-fast;
+  }
+
+  &:hover {
+    background: rgba($color-accent-blue, 0.1);
+    color: $color-accent-blue-light;
+  }
+}
