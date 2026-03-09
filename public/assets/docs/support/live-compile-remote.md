@@ -1,6 +1,6 @@
 ---
 title: MLLiveCompileRemote User Guide
-description: Comprehensive guide for using the Mischievous Labs Live Compile Remote plugin to trigger Unreal Engine Live Coding from the command line.
+description: Comprehensive guide for using the Mischievous Labs Live Code Remote plugin to trigger Unreal Engine Live Coding from the command line.
 author: Mischievous Labs
 date: 2026-03-05
 ---
@@ -93,7 +93,7 @@ If Live Coding is not already enabled:
 Open the **Output Log** in the editor and look for:
 
 ```text
-LogMLLiveCompileRemote: Live Compile Remote server listening on port 11111
+LogMLLiveCompileRemote: Live Code Remote server listening on port 11111
 ```
 
 If you see this message, the server is ready to accept commands.
@@ -323,7 +323,7 @@ This lets the agent make C++ changes and validate them without leaving the termi
 ### "Could not connect" or "Connection refused"
 
 - **The editor is not running.** Open your project in the Unreal Editor first.
-- **The plugin is not enabled.** Check **Edit > Plugins** and search for "Live Compile Remote". Ensure it is enabled, then restart the editor.
+- **The plugin is not enabled.** Check **Edit > Plugins** and search for "Live Code Remote". Ensure it is enabled, then restart the editor.
 - **A custom port is configured.** Check your `DefaultEngine.ini` for a `[MLLiveCompileRemote]` section and use the matching port in your URL.
 - **A firewall is blocking localhost connections.** This is uncommon but possible with aggressive security software. The plugin only uses `127.0.0.1`.
 
@@ -349,4 +349,4 @@ Live Coding detected no modified source files since the last compile. Make sure 
 
 ### Server failed to start (port conflict)
 
-If you see `Failed to start Live Compile Remote server on port 11111` in the Output Log, another process is using that port. Change the port in `DefaultEngine.ini` as described in the [Configuration](#configuration) section.
+If you see `Failed to start Live Code Remote server on port 11111` in the Output Log, another process is using that port. Change the port in `DefaultEngine.ini` as described in the [Configuration](#configuration) section.

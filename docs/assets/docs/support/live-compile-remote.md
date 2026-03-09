@@ -1,4 +1,11 @@
-# LiveCompileRemote User Guide
+---
+title: MLLiveCompileRemote User Guide
+description: Comprehensive guide for using the Mischievous Labs Live Code Remote plugin to trigger Unreal Engine Live Coding from the command line.
+author: Mischievous Labs
+date: 2026-03-05
+---
+
+# MLLiveCompileRemote User Guide
 
 ## Table of Contents
 
@@ -7,14 +14,14 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Using the CLI Client](#using-the-cli-client)
+- [Using the HTTP API](#using-the-http-api)
 - [Command Reference](#command-reference)
 - [Integration Examples](#integration-examples)
 - [Troubleshooting](#troubleshooting)
 
 ## Overview
 
-**MLLiveCompileRemote** is an Unreal Engine editor plugin that exposes a TCP server on localhost, allowing you to trigger Live Coding compilations from the command line. Instead of switching to the Unreal Editor and pressing `Ctrl+Alt+F11`, you compile directly from your terminal, IDE, or automation scripts.
+**MLLiveCompileRemote** is an Unreal Engine editor plugin that exposes an HTTP server on localhost, allowing you to trigger Live Coding compilations from the command line. Instead of switching to the Unreal Editor and pressing `Ctrl+Alt+F11`, you compile directly from your terminal, IDE, or automation scripts.
 
 This is useful when you:
 
@@ -24,23 +31,21 @@ This is useful when you:
 
 ## How It Works
 
-The plugin starts a TCP server inside the Unreal Editor that listens for text commands on localhost. A PowerShell CLI client connects, sends a command, and receives the result.
+The plugin starts an HTTP server inside the Unreal Editor that listens on localhost. Any HTTP client (curl, PowerShell, browser, etc.) can send a GET request to trigger commands and receive results.
 
 ```mermaid
 sequenceDiagram
-    participant CLI as lcc.bat / lcc.ps1
-    participant TCP as TCP Server (Plugin)
+    participant CLI as curl / any HTTP client
+    participant HTTP as HTTP Server (Plugin)
     participant LC as Live Coding Module
 
-    CLI->>TCP: Connect to 127.0.0.1:11111
-    CLI->>TCP: Send command (e.g. "compile")
-    TCP->>LC: Dispatch compile on Game Thread
-    LC-->>TCP: Compile result
-    TCP-->>CLI: Response text
-    CLI-->>CLI: Set exit code (0 or 1)
+    CLI->>HTTP: GET http://localhost:11111/compile
+    HTTP->>LC: Dispatch compile on Game Thread
+    LC-->>HTTP: Compile result
+    HTTP-->>CLI: HTTP 200 OK with response text
 ```
 
-*The CLI client connects to the plugin's TCP server on localhost, sends a text command, the server dispatches it to the Live Coding module on the game thread, and returns the result. The client then sets an exit code based on the response.*
+*Any HTTP client sends a GET request to the plugin's server on localhost. The server dispatches the command to the Live Coding module on the game thread and returns the result as plain text.*
 
 All communication stays on `127.0.0.1` (localhost) and is never exposed to the network.
 
@@ -48,7 +53,7 @@ All communication stays on `127.0.0.1` (localhost) and is never exposed to the n
 
 - **Unreal Engine 5.x** with Live Coding support
 - **Windows 10/11** (Win64 only)
-- **PowerShell 5.1+** (included with Windows)
+- An HTTP client such as `curl`, PowerShell `Invoke-WebRequest`, or a web browser
 - Live Coding enabled in your Unreal Editor preferences
 
 ### Enabling Live Coding in the Editor
@@ -88,7 +93,7 @@ If Live Coding is not already enabled:
 Open the **Output Log** in the editor and look for:
 
 ```text
-LogMLLiveCompileRemote: Live Compile Remote server listening on port 11111
+LogMLLiveCompileRemote: Live Code Remote server listening on port 11111
 ```
 
 If you see this message, the server is ready to accept commands.
@@ -106,70 +111,69 @@ Port=12345
 
 Replace `12345` with your desired port number. Restart the editor for the change to take effect.
 
-When using a custom port, pass the `-Port` parameter to the CLI client:
+When using a custom port, adjust the URL in your requests:
 
-```powershell
-.\lcc.ps1 compile -Port 12345
+```bash
+curl http://localhost:12345/compile
 ```
 
-## Using the CLI Client
+## Using the HTTP API
 
-The plugin includes two CLI client scripts in the `Scripts/` directory:
+Send a GET request to `http://localhost:11111/<command>`:
 
-| File | Description |
-| --- | --- |
-| `lcc.ps1` | PowerShell client (primary) |
-| `lcc.bat` | Batch wrapper that calls `lcc.ps1` |
+```bash
+# Trigger an async compile
+curl http://localhost:11111/compile
 
-### Adding to Your PATH
+# Trigger a synchronous compile (waits for result)
+curl http://localhost:11111/compilesync
 
-For quick access from any terminal, add the `Scripts/` directory to your system PATH, or copy `lcc.bat` and `lcc.ps1` to a directory already on your PATH.
+# Check Live Coding status
+curl http://localhost:11111/status
 
-### Basic Usage
+# Enable Live Coding for the session
+curl http://localhost:11111/enable
 
-From a terminal, run:
-
-```powershell
-# Using the batch wrapper (recommended for cmd.exe)
-lcc.bat compile
-
-# Using PowerShell directly
-.\lcc.ps1 compile
+# Show available commands
+curl http://localhost:11111/help
 ```
 
-If no command is given, the client sends `help` and displays the available commands.
+### PowerShell
 
-### Exit Codes
+```powershell
+Invoke-WebRequest -Uri http://localhost:11111/compile -UseBasicParsing | Select-Object -ExpandProperty Content
+```
 
-The CLI client returns standard exit codes for use in scripts and automation:
+### HTTP Response Codes
 
-| Exit Code | Meaning |
+| Status Code | Meaning |
 | --- | --- |
-| `0` | Success — command completed successfully, or compile had no changes |
-| `1` | Failure — an error occurred, compilation failed, or the editor is unreachable |
+| `200 OK` | Command succeeded |
+| `400 Bad Request` | Command failed (e.g., compile error, unknown command) |
+| `405 Method Not Allowed` | Non-GET request was sent |
 
-The client sets exit code `0` when the response starts with `OK`, `RESULT: Success`, `RESULT: NoChanges`, `STATUS:`, or `Available`. All other responses produce exit code `1`.
+The response body is always plain text with the command result.
 
 ## Command Reference
 
-### compile
+### /compile
 
 Triggers an asynchronous Live Coding compilation and returns immediately without waiting for the result.
 
-```powershell
-lcc.bat compile
+```bash
+curl http://localhost:11111/compile
 ```
 
 **Response:** `OK: Compile triggered`
 
 Use this command to start compilation without waiting for the result. The compilation runs in the background inside the editor.
 
-### compilesync
+### /compilesync
 
-Triggers a synchronous Live Coding compilation and waits for the result. The client blocks until compilation finishes or a 5-minute timeout is reached.
+Triggers a synchronous Live Coding compilation and waits for the result. The server blocks until compilation finishes or a 5-minute timeout is reached.
 
-```powershell
-lcc.bat compilesync
+```bash
+curl http://localhost:11111/compilesync
 ```
 
 **Possible responses:**
@@ -185,12 +189,12 @@ lcc.bat compilesync
 
 Use this command when your workflow depends on the compile result, such as running tests after a successful build.
 
-### status
+### /status
 
 Queries the current state of Live Coding in the editor.
 
-```powershell
-lcc.bat status
+```bash
+curl http://localhost:11111/status
 ```
 
 **Example response:**
@@ -210,12 +214,12 @@ STATUS:
 | `CanEnable` | Whether Live Coding can be enabled (if currently disabled) |
 | `Compiling` | Whether a compilation is currently in progress |
 
-### enable
+### /enable
 
 Enables Live Coding for the current editor session. If Live Coding is already enabled, the command returns immediately.
 
-```powershell
-lcc.bat enable
+```bash
+curl http://localhost:11111/enable
 ```
 
 **Possible responses:**
@@ -224,12 +228,12 @@ lcc.bat enable
 - `OK: Live Coding is already enabled for this session`
 - `ERROR: Cannot enable Live Coding for this session`
 
-### help
+### /help
 
 Displays the list of available commands.
 
-```powershell
-lcc.bat help
+```bash
+curl http://localhost:11111/help
 ```
 
 ## Integration Examples
@@ -245,7 +249,7 @@ Add a task to your `.vscode/tasks.json` to compile with a keyboard shortcut:
     {
       "label": "Live Compile (Unreal)",
       "type": "shell",
-      "command": "path/to/lcc.bat compilesync",
+      "command": "curl -s http://localhost:11111/compilesync",
       "group": "build",
       "presentation": {
         "reveal": "silent",
@@ -271,29 +275,35 @@ Then bind the task to a key in `keybindings.json`:
 
 1. Go to **Settings > Tools > External Tools**
 2. Add a new tool:
-   - **Program:** `path\to\lcc.bat`
-   - **Arguments:** `compilesync`
+   - **Program:** `curl`
+   - **Arguments:** `-s http://localhost:11111/compilesync`
    - **Working directory:** `$ProjectFileDir$`
 3. Assign a keyboard shortcut under **Settings > Keymap > External Tools**
 
 ### Script Automation
 
-Use the exit code to chain compile-then-test workflows:
+Use curl's exit code and the HTTP status to chain compile-then-test workflows:
 
-```powershell
+```bash
 # Compile and run tests only on success
-.\lcc.ps1 compilesync
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Compile succeeded, running tests..."
+if curl -sf http://localhost:11111/compilesync; then
+    echo "Compile succeeded, running tests..."
     # Run your test suite here
-} else {
-    Write-Host "Compile failed, skipping tests."
-}
+else
+    echo "Compile failed, skipping tests."
+fi
 ```
 
-```batch
-REM Batch equivalent
-lcc.bat compilesync && echo Compile OK || echo Compile FAILED
+```powershell
+# PowerShell equivalent
+try {
+    $result = Invoke-WebRequest -Uri http://localhost:11111/compilesync -UseBasicParsing
+    Write-Host $result.Content
+    Write-Host "Compile succeeded, running tests..."
+    # Run your test suite here
+} catch {
+    Write-Host "Compile failed, skipping tests."
+}
 ```
 
 ### Claude Code / AI Agent Integration
@@ -302,19 +312,19 @@ If you use an AI coding agent that can run shell commands, the agent can compile
 
 ```bash
 # Check status, compile, and verify
-./lcc.bat status
-./lcc.bat compilesync
+curl http://localhost:11111/status
+curl http://localhost:11111/compilesync
 ```
 
 This lets the agent make C++ changes and validate them without leaving the terminal.
 
 ## Troubleshooting
 
-### "Could not connect to Unreal Editor on port 11111"
+### "Could not connect" or "Connection refused"
 
 - **The editor is not running.** Open your project in the Unreal Editor first.
-- **The plugin is not enabled.** Check **Edit > Plugins** and search for "Live Compile Remote". Ensure it is enabled, then restart the editor.
-- **A custom port is configured.** Check your `DefaultEngine.ini` for a `[MLLiveCompileRemote]` section and pass the matching port: `lcc.bat compile 12345`
+- **The plugin is not enabled.** Check **Edit > Plugins** and search for "Live Code Remote". Ensure it is enabled, then restart the editor.
+- **A custom port is configured.** Check your `DefaultEngine.ini` for a `[MLLiveCompileRemote]` section and use the matching port in your URL.
 - **A firewall is blocking localhost connections.** This is uncommon but possible with aggressive security software. The plugin only uses `127.0.0.1`.
 
 ### "Live Coding has not started"
@@ -322,16 +332,16 @@ This lets the agent make C++ changes and validate them without leaving the termi
 Live Coding must be enabled in the editor before you can compile remotely:
 
 1. Verify in **Edit > Editor Preferences > Live Coding** that it is enabled
-2. Or run `lcc.bat enable` to enable it for the current session
-3. Check `lcc.bat status` to confirm `Started: true`
+2. Or run `curl http://localhost:11111/enable` to enable it for the current session
+3. Check `curl http://localhost:11111/status` to confirm `Started: true`
 
 ### "A compile is already in progress"
 
-Only one Live Coding compile can run at a time. Wait for the current compile to finish, then retry. You can poll with `lcc.bat status` and check the `Compiling` field.
+Only one Live Coding compile can run at a time. Wait for the current compile to finish, then retry. You can poll with `curl http://localhost:11111/status` and check the `Compiling` field.
 
 ### Compile reports "Failure"
 
-The CLI only relays the result. Open the **Output Log** in the Unreal Editor to see the full compiler error messages and fix your code accordingly.
+The HTTP response only relays the result. Open the **Output Log** in the Unreal Editor to see the full compiler error messages and fix your code accordingly.
 
 ### Compile reports "NoChanges"
 
@@ -339,4 +349,4 @@ Live Coding detected no modified source files since the last compile. Make sure 
 
 ### Server failed to start (port conflict)
 
-If you see `Failed to start Live Compile Remote server on port 11111` in the Output Log, another process is using that port. Change the port in `DefaultEngine.ini` as described in the [Configuration](#configuration) section.
+If you see `Failed to start Live Code Remote server on port 11111` in the Output Log, another process is using that port. Change the port in `DefaultEngine.ini` as described in the [Configuration](#configuration) section.
