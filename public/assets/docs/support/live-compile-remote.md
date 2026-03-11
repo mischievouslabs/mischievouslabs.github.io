@@ -1,11 +1,4 @@
----
-title: MLLiveCompileRemote User Guide
-description: Comprehensive guide for using the Mischievous Labs Live Code Remote plugin to trigger Unreal Engine Live Coding from the command line.
-author: Mischievous Labs
-date: 2026-03-05
----
-
-# MLLiveCompileRemote User Guide
+# Mischievous Labs - Live Compile Remote
 
 ## Table of Contents
 
@@ -21,7 +14,7 @@ date: 2026-03-05
 
 ## Overview
 
-**MLLiveCompileRemote** is an Unreal Engine editor plugin that exposes an HTTP server on localhost, allowing you to trigger Live Coding compilations from the command line. Instead of switching to the Unreal Editor and pressing `Ctrl+Alt+F11`, you compile directly from your terminal, IDE, or automation scripts.
+**Mischievous Labs - Live Compile Remote** is an Unreal Engine editor plugin that exposes an HTTP server on localhost, allowing you to trigger Live Coding compilations from the command line. Instead of switching to the Unreal Editor and pressing `Ctrl+Alt+F11`, you compile directly from your terminal, IDE, or automation scripts.
 
 This is useful when you:
 
@@ -70,20 +63,20 @@ If Live Coding is not already enabled:
 
 ### As an Engine Plugin
 
-1. Copy the `MLLiveCompileRemote` folder into your engine's `Plugins` directory:
+1. Copy the `Mischievous Labs - Live Compile Remote` folder into your engine's `Plugins` directory:
 
 ```text
-<UE Install>/Engine/Plugins/MLLiveCompileRemote/
+<UE Install>/Engine/Plugins/Mischievous Labs - Live Compile Remote/
 ```
 
 2. Rebuild the engine or open your project. The plugin loads automatically.
 
 ### As a Project Plugin
 
-1. Copy the `MLLiveCompileRemote` folder into your project's `Plugins` directory:
+1. Copy the `Mischievous Labs - Live Compile Remote` folder into your project's `Plugins` directory:
 
 ```text
-<YourProject>/Plugins/MLLiveCompileRemote/
+<YourProject>/Plugins/Mischievous Labs - Live Compile Remote/
 ```
 
 2. Open your project in the Unreal Editor. The plugin is enabled by default.
@@ -93,7 +86,7 @@ If Live Coding is not already enabled:
 Open the **Output Log** in the editor and look for:
 
 ```text
-LogMLLiveCompileRemote: Live Code Remote server listening on port 11111
+LogMischievous Labs - Live Compile Remote: Live Compile Remote server listening on port 11111
 ```
 
 If you see this message, the server is ready to accept commands.
@@ -105,7 +98,7 @@ If you see this message, the server is ready to accept commands.
 The default port is **11111**. To change it, add the following to your project's `DefaultEngine.ini`:
 
 ```ini
-[MLLiveCompileRemote]
+[Mischievous Labs - Live Compile Remote]
 Port=12345
 ```
 
@@ -323,8 +316,8 @@ This lets the agent make C++ changes and validate them without leaving the termi
 ### "Could not connect" or "Connection refused"
 
 - **The editor is not running.** Open your project in the Unreal Editor first.
-- **The plugin is not enabled.** Check **Edit > Plugins** and search for "Live Code Remote". Ensure it is enabled, then restart the editor.
-- **A custom port is configured.** Check your `DefaultEngine.ini` for a `[MLLiveCompileRemote]` section and use the matching port in your URL.
+- **The plugin is not enabled.** Check **Edit > Plugins** and search for "Live Compile Remote". Ensure it is enabled, then restart the editor.
+- **A custom port is configured.** Check your `DefaultEngine.ini` for a `[Mischievous Labs - Live Compile Remote]` section and use the matching port in your URL.
 - **A firewall is blocking localhost connections.** This is uncommon but possible with aggressive security software. The plugin only uses `127.0.0.1`.
 
 ### "Live Coding has not started"
@@ -349,4 +342,4 @@ Live Coding detected no modified source files since the last compile. Make sure 
 
 ### Server failed to start (port conflict)
 
-If you see `Failed to start Live Code Remote server on port 11111` in the Output Log, another process is using that port. Change the port in `DefaultEngine.ini` as described in the [Configuration](#configuration) section.
+If you see `Failed to start Live Compile Remote server on port 11111` in the Output Log, another process is using that port. Change the port in `DefaultEngine.ini` as described in the [Configuration](#configuration) section.
