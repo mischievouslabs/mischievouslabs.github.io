@@ -1,4 +1,11 @@
-# Mischievous Labs - Live Compile Remote
+---
+title: MLLiveCompileRemote User Guide
+description: Comprehensive guide for using the Mischievous Labs Live Compile Remote plugin to trigger Unreal Engine Live Coding from the command line.
+author: Mischievous Labs
+date: 2026-03-05
+---
+
+# MLLiveCompileRemote User Guide
 
 ## Table of Contents
 
@@ -14,7 +21,7 @@
 
 ## Overview
 
-**Mischievous Labs - Live Compile Remote** is an Unreal Engine editor plugin that exposes an HTTP server on localhost, allowing you to trigger Live Coding compilations from the command line. Instead of switching to the Unreal Editor and pressing `Ctrl+Alt+F11`, you compile directly from your terminal, IDE, or automation scripts.
+**MLLiveCompileRemote** is an Unreal Engine editor plugin that exposes an HTTP server on localhost, allowing you to trigger Live Coding compilations from the command line. Instead of switching to the Unreal Editor and pressing `Ctrl+Alt+F11`, you compile directly from your terminal, IDE, or automation scripts.
 
 This is useful when you:
 
@@ -63,20 +70,20 @@ If Live Coding is not already enabled:
 
 ### As an Engine Plugin
 
-1. Copy the `Mischievous Labs - Live Compile Remote` folder into your engine's `Plugins` directory:
+1. Copy the `MLLiveCompileRemote` folder into your engine's `Plugins` directory:
 
 ```text
-<UE Install>/Engine/Plugins/Mischievous Labs - Live Compile Remote/
+<UE Install>/Engine/Plugins/MLLiveCompileRemote/
 ```
 
 2. Rebuild the engine or open your project. The plugin loads automatically.
 
 ### As a Project Plugin
 
-1. Copy the `Mischievous Labs - Live Compile Remote` folder into your project's `Plugins` directory:
+1. Copy the `MLLiveCompileRemote` folder into your project's `Plugins` directory:
 
 ```text
-<YourProject>/Plugins/Mischievous Labs - Live Compile Remote/
+<YourProject>/Plugins/MLLiveCompileRemote/
 ```
 
 2. Open your project in the Unreal Editor. The plugin is enabled by default.
@@ -86,7 +93,7 @@ If Live Coding is not already enabled:
 Open the **Output Log** in the editor and look for:
 
 ```text
-LogMischievous Labs - Live Compile Remote: Live Compile Remote server listening on port 11111
+LogMLLiveCompileRemote: Live Compile Remote server listening on port 11111
 ```
 
 If you see this message, the server is ready to accept commands.
@@ -98,7 +105,7 @@ If you see this message, the server is ready to accept commands.
 The default port is **11111**. To change it, add the following to your project's `DefaultEngine.ini`:
 
 ```ini
-[Mischievous Labs - Live Compile Remote]
+[MLLiveCompileRemote]
 Port=12345
 ```
 
@@ -126,6 +133,12 @@ curl http://localhost:11111/status
 
 # Enable Live Coding for the session
 curl http://localhost:11111/enable
+
+# Get recent editor log output (last 100 lines by default)
+curl http://localhost:11111/logs
+
+# Get a specific number of log lines (max 500)
+curl "http://localhost:11111/logs?lines=50"
 
 # Show available commands
 curl http://localhost:11111/help
@@ -220,6 +233,26 @@ curl http://localhost:11111/enable
 - `OK: Live Coding enabled for session`
 - `OK: Live Coding is already enabled for this session`
 - `ERROR: Cannot enable Live Coding for this session`
+
+### /logs
+
+Retrieves recent lines from the editor's log file. Useful for checking compiler errors after a failed build.
+
+```bash
+# Default: last 100 lines
+curl http://localhost:11111/logs
+
+# Specify line count (max 500)
+curl "http://localhost:11111/logs?lines=200"
+```
+
+**Example response:**
+
+```text
+LOGS (last 100 lines):
+[2026.03.12-16.50.35:194][732]LogLiveCoding: Display: Live coding succeeded
+...
+```
 
 ### /help
 
@@ -317,7 +350,7 @@ This lets the agent make C++ changes and validate them without leaving the termi
 
 - **The editor is not running.** Open your project in the Unreal Editor first.
 - **The plugin is not enabled.** Check **Edit > Plugins** and search for "Live Compile Remote". Ensure it is enabled, then restart the editor.
-- **A custom port is configured.** Check your `DefaultEngine.ini` for a `[Mischievous Labs - Live Compile Remote]` section and use the matching port in your URL.
+- **A custom port is configured.** Check your `DefaultEngine.ini` for a `[MLLiveCompileRemote]` section and use the matching port in your URL.
 - **A firewall is blocking localhost connections.** This is uncommon but possible with aggressive security software. The plugin only uses `127.0.0.1`.
 
 ### "Live Coding has not started"
@@ -334,7 +367,7 @@ Only one Live Coding compile can run at a time. Wait for the current compile to 
 
 ### Compile reports "Failure"
 
-The HTTP response only relays the result. Open the **Output Log** in the Unreal Editor to see the full compiler error messages and fix your code accordingly.
+The HTTP response only relays the result. Use `curl http://localhost:11111/logs` to view recent editor log output including compiler errors, or open the **Output Log** in the Unreal Editor.
 
 ### Compile reports "NoChanges"
 
