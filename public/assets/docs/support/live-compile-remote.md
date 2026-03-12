@@ -1,10 +1,3 @@
----
-title: MLLiveCompileRemote User Guide
-description: Comprehensive guide for using the Mischievous Labs Live Compile Remote plugin to trigger Unreal Engine Live Coding from the command line.
-author: Mischievous Labs
-date: 2026-03-05
----
-
 # MLLiveCompileRemote User Guide
 
 ## Table of Contents
