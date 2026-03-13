@@ -162,9 +162,13 @@
 // Product Cards
 // =============================================================================
 
+.products-section {
+  max-width: $max-width-nav;
+}
+
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: $space-lg;
 
   @include respond-to(tablet) {
@@ -229,6 +233,33 @@
     background-repeat: no-repeat;
     vertical-align: middle;
   }
+}
+
+.free-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: $font-weight-semibold;
+  color: $color-accent-cyan;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid $color-accent-cyan;
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+  margin-left: 2px;
+  vertical-align: middle;
+  position: relative;
+  top: -4px;
+}
+
+.available-now-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: $font-weight-semibold;
+  color: $color-accent-cyan;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: $space-sm;
+  padding-left: $space-md;
 }
 
 .coming-soon-badge {
