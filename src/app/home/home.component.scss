@@ -235,6 +235,22 @@
   }
 }
 
+.new-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: $font-weight-semibold;
+  color: $color-accent-amber;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid $color-accent-amber;
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+  margin-left: 2px;
+  vertical-align: middle;
+  position: relative;
+  top: -4px;
+}
+
 .free-badge {
   display: inline-block;
   font-size: 0.65rem;
